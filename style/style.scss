@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono&display=swap');
+@import "./config";
+@import url("./../app/components/header/header.css");
+@import url("./../app/components/game/ticTacToe.css");
+@import url("./../app/components/footer/footer.css");
+
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+

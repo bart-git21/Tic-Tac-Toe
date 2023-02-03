@@ -1,0 +1,57 @@
+::placeholder {
+  color: #665;
+}
+
+::selection {
+  background-color: rgb(0, 89, 255);
+  color: #fff;
+}
+
+input,
+textarea {
+  outline: none;
+}
+input:focus:required:invalid,
+textarea:focus:required:invalid {
+  border-color: red;
+}
+input:required:valid,
+textarea:required:valid {
+  border-color: green;
+}
+
+body {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: white;
+  min-width: 320px;
+  height: max(300px, 100vh);
+  position: relative;
+  overflow-x: hidden;
+  background-color: rgb(2, 9, 41);
+}
+
+.resultField {
+  height: max(10vh, 60px);
+}
+
+.ticTacWrapper {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, auto);
+}
+
+.box {
+  font-size: 64px;
+  border: 1px solid rgb(0, 89, 255);
+  width: 100px;
+  height: 100px;
+  display: grid;
+  align-items: center;
+  line-height: 1;
+  text-align: center;
+}
+.box:hover {
+  background-color: rgb(2, 63, 87);
+}

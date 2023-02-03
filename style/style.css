@@ -1,0 +1,45 @@
+@import url("https://fonts.googleapis.com/css2?family=Azeret+Mono&display=swap");
+@import url("./../app/components/header/header.css");
+@import url("./../app/components/game/ticTacToe.css");
+@import url("./../app/components/footer/footer.css");
+::placeholder {
+  color: #665;
+}
+
+::selection {
+  background-color: rgb(0, 89, 255);
+  color: #fff;
+}
+
+input,
+textarea {
+  outline: none;
+}
+input:focus:required:invalid,
+textarea:focus:required:invalid {
+  border-color: red;
+}
+input:required:valid,
+textarea:required:valid {
+  border-color: green;
+}
+
+body {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: white;
+  min-width: 320px;
+  height: max(300px, 100vh);
+  position: relative;
+  overflow-x: hidden;
+  background-color: rgb(2, 9, 41);
+}
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}

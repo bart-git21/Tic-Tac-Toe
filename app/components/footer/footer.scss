@@ -1,0 +1,11 @@
+@import "./../../../style/config";
+
+footer {
+    width: 100%;
+    min-height: 10vh;
+    position: relative;
+    text-align: center;
+    color: $c-text-dark;
+    font-family: 'Azeret Mono', monospace;
+}
+

@@ -1,0 +1,26 @@
+@import "./../../../style/config";
+
+.resultField {
+    height: Max(10vh, 60px);
+}
+.ticTacWrapper {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(3, auto);
+}
+  
+.box {
+    font-size: calc(4 * $fontsize);
+    border: 1px solid $c-accent;
+    width: 100px;
+    height: 100px;
+
+    display: grid;
+    align-items: center;
+    line-height: 1;
+    text-align: center;
+
+    &:hover {
+        background-color: $c-bg-main;
+    }
+}
