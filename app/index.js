@@ -19,6 +19,7 @@ let currentWinningCases = [];
 
 function writtenIntoBox(e) {
   e.target.textContent = userText;
+  e.target.removeEventListener("click", onClick);
 }
 function pushArray(e) {
   gameArray[e.target.id] = userText;
