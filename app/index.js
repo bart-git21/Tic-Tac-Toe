@@ -25,32 +25,27 @@ function pushArray(e) {
   gameArray[e.target.id] = userText;
 }
 function checking() {
-  const arrLength = currentWinningCases.length;
-  switch (true) {
-    case arrLength >= 1: {
-      currentWinningCases.forEach((el) => {
-        if (el.every((i) => gameArray[i] === userText)) {
-          return (resultField.textContent = `${userText} is winning!`);
-        }
-        const isRawIncludesX = el.some((e) => gameArray[e] === "X");
-        const isRawIncludesO = el.some((e) => gameArray[e] === "O");
-        isRawIncludesX &&
-          isRawIncludesO &&
-          (currentWinningCases = currentWinningCases.filter(
-            (e) => JSON.stringify(e) !== JSON.stringify(el)
-          ));
-      });
-      break;
-    }
-    case 1: {
+  if (currentWinningCases.length > 1) {
+    currentWinningCases.forEach((el) => {
+      if (el.every((i) => gameArray[i] === userText)) {
+        return (resultField.textContent = `${userText} is winning!`);
+      }
+      const isRawIncludesX = el.some((e) => gameArray[e] === "X");
+      const isRawIncludesO = el.some((e) => gameArray[e] === "O");
+      isRawIncludesX &&
+        isRawIncludesO &&
+        (currentWinningCases = currentWinningCases.filter(
+          (e) => JSON.stringify(e) !== JSON.stringify(el)
+        ));
+    });
+    if (currentWinningCases.length === 1) {
       const lastClearRawText =
         gameArray[currentWinningCases[0][0]] ||
         gameArray[currentWinningCases[0][1]];
       lastClearRawText === userText && (resultField.textContent = `it's draw`);
-      break;
     }
-    default:
-      resultField.textContent = `it's draw`;
+  } else {
+    resultField.textContent = `it's draw`;
   }
 }
 function onClick(e) {
