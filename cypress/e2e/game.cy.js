@@ -34,7 +34,7 @@ describe("game", () => {
     cy.get('[data-test="resultField"]').should("have.text", "X is winning!");
   })
 
-  it.only("Draw case works correctly", () => {
+  it("Draw case works correctly", () => {
     cy.get('[data-test="ticTacWrapper"] > div').eq(0).click();
     cy.get('[data-test="ticTacWrapper"] > div').eq(1).click();
     cy.get('[data-test="ticTacWrapper"] > div').eq(2).click();
@@ -44,5 +44,16 @@ describe("game", () => {
     cy.get('[data-test="ticTacWrapper"] > div').eq(7).click();
     
     cy.get('[data-test="resultField"]').should("have.text", "it's draw");
+  })
+
+  it.only("Finish case works correctly", () => {
+    cy.get('[data-test="ticTacWrapper"] > div').eq(0).click();
+    cy.get('[data-test="ticTacWrapper"] > div').eq(1).click();
+    cy.get('[data-test="ticTacWrapper"] > div').eq(4).click();
+    cy.get('[data-test="ticTacWrapper"] > div').eq(5).click();
+    cy.get('[data-test="ticTacWrapper"] > div').eq(8).click();
+    
+    cy.get('[data-test="ticTacWrapper"] > div').eq(2).click();
+    cy.get('[data-test="resultField"]').should("have.not.text");
   })
 });
