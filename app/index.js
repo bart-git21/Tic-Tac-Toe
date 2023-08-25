@@ -28,6 +28,7 @@ function checking() {
   if (currentWinningCases.length > 1) {
     currentWinningCases.forEach((el) => {
       if (el.every((i) => gameArray[i] === userText)) {
+        removeOnclick();
         return (resultField.textContent = `${userText} is winning!`);
       }
       const isRawIncludesX = el.some((e) => gameArray[e] === "X");
@@ -42,7 +43,7 @@ function checking() {
       const lastClearRawText =
         gameArray[currentWinningCases[0][0]] ||
         gameArray[currentWinningCases[0][1]];
-      lastClearRawText === userText && (resultField.textContent = `it's draw`);
+      lastClearRawText === userText && (resultField.textContent = `it's draw`) && removeOnclick();
     }
   } else {
     resultField.textContent = `it's draw`;
@@ -55,7 +56,7 @@ function onClick(e) {
   pushArray(e);
   checking();
 }
-function start() {
+function startGame() {
   currentWinningCases = [...winningCases];
   gameArray = [...Array(9).fill("")];
   whichTurn = true;
@@ -67,5 +68,12 @@ function start() {
     e.textContent = "";
   });
 }
-start();
-restartBtn.addEventListener("click", start);
+startGame();
+restartBtn.addEventListener("click", startGame);
+
+function removeOnclick() {
+  // remove onClick from EMPTY boxes
+  gameArray.forEach(
+    (e, id) => !e && boxes[id].removeEventListener("click", onClick)
+  );
+}
