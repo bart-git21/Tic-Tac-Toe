@@ -1,9 +1,10 @@
 @import "./../../../style/config";
 
-.resultField {
+.result-field {
     height: Max(10vh, 60px);
 }
-.ticTacWrapper {
+
+.tic-tac-wrapper {
     display: grid;
     gap: 20px;
     grid-template-columns: repeat(3, auto);
@@ -14,7 +15,6 @@
     border: 1px solid $c-accent;
     width: 100px;
     height: 100px;
-
     display: grid;
     align-items: center;
     line-height: 1;

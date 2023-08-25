@@ -1,10 +1,10 @@
 // variables
 
-$c-accent: rgb(0, 89, 255); // accent color
+$c-accent: rgb(0 89 255); // accent color
 $c-text: white; // text color
 $c-text-dark: darkgray; // text color
-$c-bg-main: rgb(2, 63, 87); // background color
-$c-bg-dark: rgb(2, 9, 41); // background color
+$c-bg-main: rgb(2 63 87); // background color
+$c-bg-dark: rgb(2 9 41); // background color
 $fontsize: 16px; 
 $lineheight: 1.65; 
 $userfont: Roboto, sans-serif; // font-family
@@ -25,11 +25,12 @@ input,
 textarea {
     outline: none;
 
-    &:focus:required:invalid {
-        border-color: red;
-    }
     &:required:valid {
         border-color: green;
+    }
+
+    &:focus:required:invalid {
+        border-color: red;
     }
 }
 
