@@ -1,4 +1,3 @@
-const ticTacWrapper = document.querySelector(".tic-tac-wrapper");
 const resultField = document.querySelector(".result-field");
 const restartBtn = document.querySelector(".restart-btn");
 const boxes = document.querySelectorAll(".box");
