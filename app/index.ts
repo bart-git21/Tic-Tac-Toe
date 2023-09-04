@@ -5,13 +5,13 @@ const boxes: NodeListOf<HTMLDivElement> = document.querySelectorAll(".box");
 type DefaultValueType = {
   whichTurn: boolean;
   text: string;
-  gameArray: string[];
+  usersList: string[];
   winningCases: Readonly<number[][]>;
 };
 const defaultValue: DefaultValueType = {
   whichTurn: true,
   text: "",
-  gameArray: new Array(9).fill(""),
+  usersList: Array(9).fill(""),
   winningCases: [
     [0, 1, 2],
     [3, 4, 5],
@@ -23,78 +23,97 @@ const defaultValue: DefaultValueType = {
     [2, 4, 6],
   ],
 };
-let gameValue: DefaultValueType = {} as DefaultValueType;
 
-function ontypingBox(e: MouseEvent): void {
-  const target = e.target as HTMLDivElement;
-  target.textContent = gameValue.text;
-  target.removeEventListener("click", onClick);
-}
-function updateGameArray(e: MouseEvent): void {
-  const index: number = +(e.target as HTMLDivElement).id;
-  gameValue.gameArray[index] = gameValue.text;
-}
-function checking() {
-  if (gameValue.winningCases.length > 1) {
-    gameValue.winningCases.forEach((el) => {
-      if (el.every((i) => gameValue.gameArray[i] === gameValue.text)) {
-        removeOnclick();
-        return (resultField.textContent = `${gameValue.text} is winning!`);
-      }
-      removeLosingCases(el);
-    });
+class MyGame {
+  game: DefaultValueType;
+  invokeOnclick: (event:MouseEvent) => void;
 
-    if (gameValue.winningCases.length === 1) {
-      const [text1, text2] = gameValue.winningCases
-        .flat()
-        .map((e) => gameValue.gameArray[e]);
-      const lastRawText = text1 || text2;
-      lastRawText === gameValue.text &&
-        (resultField.textContent = `it's draw`) &&
-        removeOnclick();
-    }
-  } else {
+  constructor(defVal: DefaultValueType) {
+    this.game = defVal;
+    this.invokeOnclick = this.onClickBox.bind(this);
+  }
+
+  start() {
+    this.game = JSON.parse(JSON.stringify(defaultValue));
+    resultField.textContent = "";
+    this.addOnclickIntoBoxes();
+  }
+  isWin(el: number[]): boolean {
+    return el.every((i) => this.game.usersList[i] === this.game.text);
+  }
+  finishWithWin() {
+    this.removeOnclickFromAllBoxes();
+    resultField.textContent = `${this.game.text} is winning!`;
+  }
+  finishWithDraw() {
+    this.removeOnclickFromAllBoxes();
     resultField.textContent = `it's draw`;
   }
-}
-function onClick(e: MouseEvent) {
-  gameValue.text = gameValue.whichTurn ? "X" : "O";
-  gameValue.whichTurn = !gameValue.whichTurn;
-  ontypingBox(e);
-  updateGameArray(e);
-  checking();
-}
-function startGame() {
-  gameValue = { ...defaultValue };
-  resultField.textContent = "";
 
-  boxes.forEach((e, index) => {
-    e.addEventListener("click", onClick);
-    e.id = index.toString();
-    e.textContent = "";
-  });
-}
-startGame();
-restartBtn.addEventListener("click", startGame);
+  updateUsersList(e: MouseEvent): void {
+    const index: number = +(e.target as HTMLDivElement).id;
+    this.game.usersList[index] = this.game.text;
+  }
+  getUsertext(): string {
+    const [text1, text2] = this.game.winningCases
+      .flat()
+      .map((e) => this.game.usersList[e]);
+    return text1 || text2;
+  }
 
-function removeOnclick() {
-  // remove onClick from EMPTY boxes
-  gameValue.gameArray.forEach(
-    (e, id) => !e && boxes[id].removeEventListener("click", onClick)
-  );
-}
-function removeLosingCases(arr: number[]): void {
-  // get winning cases without losing cases (because of raws includes both options)
-  const isRawIncludesX = arr.some((e) => gameValue.gameArray[e] === "X");
-  const isRawIncludesO = arr.some((e) => gameValue.gameArray[e] === "O");
-  isRawIncludesX &&
-    isRawIncludesO &&
-    (gameValue.winningCases = gameValue.winningCases.filter(
-      (e) => JSON.stringify(e) !== JSON.stringify(arr)
-    ));
+  removeLosingCases(arr: number[]): void {
+    // get winning cases without losing cases (because of raws includes both options)
+    const isRawIncludesX = arr.some((e) => this.game.usersList[e] === "X");
+    const isRawIncludesO = arr.some((e) => this.game.usersList[e] === "O");
+    isRawIncludesX &&
+      isRawIncludesO &&
+      (this.game.winningCases = this.game.winningCases.filter(
+        (e) => JSON.stringify(e) !== JSON.stringify(arr)
+      ));
+  }
+  updateWinningCases() {
+    if (this.game.winningCases.length > 1) {
+      this.game.winningCases.forEach((el) => {
+        this.isWin(el) ? this.finishWithWin() : this.removeLosingCases(el);
+      });
 
-    
-    // ================== TODO
-    // add case when raw includes two X and next value is O
-    // this winningCase should be deleted
+      this.game.winningCases.length === 1 &&
+        this.getUsertext() === this.game.text &&
+        this.finishWithDraw();
+    } else {
+      this.finishWithDraw();
+    }
+  }
+
+  onClickBox(e: MouseEvent) {
+    this.game.text = this.game.whichTurn ? "X" : "O";
+    this.game.whichTurn = !this.game.whichTurn;
+    this.onTypingBox(e);
+    this.updateUsersList(e);
+    this.updateWinningCases();
+  }
+  onTypingBox(e: MouseEvent): void {
+    const target = e.target as HTMLDivElement;
+    target.textContent = this.game.text;
+    this.removeOnclickFromBox(+target.id);
+  }
+  addOnclickIntoBoxes() {
+    const _this = this;
+    boxes.forEach((box, index) => {
+      box.addEventListener("click", _this.invokeOnclick);
+      box.id = index.toString();
+      box.textContent = "";
+    });
+  }
+  removeOnclickFromBox(id: number) {
+    boxes[id].removeEventListener("click", this.invokeOnclick);
 }
+removeOnclickFromAllBoxes() {
+    boxes.forEach(
+      e => e.removeEventListener("click", this.invokeOnclick)
+    );
+  }
+}
+const newGame = new MyGame(defaultValue);
+newGame.start();
+restartBtn.addEventListener("click", () => newGame.start());

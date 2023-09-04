@@ -1,21 +1,10 @@
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var resultField = document.querySelector(".result-field");
 var restartBtn = document.querySelector(".restart-btn");
 var boxes = document.querySelectorAll(".box");
 var defaultValue = {
     whichTurn: true,
     text: "",
-    gameArray: new Array(9).fill(""),
+    usersList: Array(9).fill(""),
     winningCases: [
         [0, 1, 2],
         [3, 4, 5],
@@ -27,66 +16,91 @@ var defaultValue = {
         [2, 4, 6],
     ],
 };
-var gameValue = {};
-function ontypingBox(e) {
-    var target = e.target;
-    target.textContent = gameValue.text;
-    target.removeEventListener("click", onClick);
-}
-function updateGameArray(e) {
-    var index = +e.target.id;
-    gameValue.gameArray[index] = gameValue.text;
-}
-function checking() {
-    if (gameValue.winningCases.length > 1) {
-        gameValue.winningCases.forEach(function (el) {
-            if (el.every(function (i) { return gameValue.gameArray[i] === gameValue.text; })) {
-                removeOnclick();
-                return (resultField.textContent = "".concat(gameValue.text, " is winning!"));
-            }
-            removeLosingCases(el);
-        });
-        if (gameValue.winningCases.length === 1) {
-            var _a = gameValue.winningCases
-                .flat()
-                .map(function (e) { return gameValue.gameArray[e]; }), text1 = _a[0], text2 = _a[1];
-            var lastRawText = text1 || text2;
-            lastRawText === gameValue.text &&
-                (resultField.textContent = "it's draw") &&
-                removeOnclick();
-        }
+var MyGame = /** @class */ (function () {
+    function MyGame(defVal) {
+        this.game = defVal;
+        this.invokeOnclick = this.onClickBox.bind(this);
     }
-    else {
+    MyGame.prototype.start = function () {
+        this.game = JSON.parse(JSON.stringify(defaultValue));
+        resultField.textContent = "";
+        this.addOnclickIntoBoxes();
+    };
+    MyGame.prototype.isWin = function (el) {
+        var _this_1 = this;
+        return el.every(function (i) { return _this_1.game.usersList[i] === _this_1.game.text; });
+    };
+    MyGame.prototype.finishWithWin = function () {
+        this.removeOnclickFromAllBoxes();
+        resultField.textContent = "".concat(this.game.text, " is winning!");
+    };
+    MyGame.prototype.finishWithDraw = function () {
+        this.removeOnclickFromAllBoxes();
         resultField.textContent = "it's draw";
-    }
-}
-function onClick(e) {
-    gameValue.text = gameValue.whichTurn ? "X" : "O";
-    gameValue.whichTurn = !gameValue.whichTurn;
-    ontypingBox(e);
-    updateGameArray(e);
-    checking();
-}
-function startGame() {
-    gameValue = __assign({}, defaultValue);
-    resultField.textContent = "";
-    boxes.forEach(function (e, index) {
-        e.addEventListener("click", onClick);
-        e.id = index.toString();
-        e.textContent = "";
-    });
-}
-startGame();
-restartBtn.addEventListener("click", startGame);
-function removeOnclick() {
-    // remove onClick from EMPTY boxes
-    gameValue.gameArray.forEach(function (e, id) { return !e && boxes[id].removeEventListener("click", onClick); });
-}
-function removeLosingCases(arr) {
-    // get winning cases without losing cases (because of raws are completed)
-    var isRawIncludesX = arr.some(function (e) { return gameValue.gameArray[e] === "X"; });
-    var isRawIncludesO = arr.some(function (e) { return gameValue.gameArray[e] === "O"; });
-    isRawIncludesX &&
-        isRawIncludesO &&
-        (gameValue.winningCases = gameValue.winningCases.filter(function (e) { return JSON.stringify(e) !== JSON.stringify(arr); }));
-}
+    };
+    MyGame.prototype.updateUsersList = function (e) {
+        var index = +e.target.id;
+        this.game.usersList[index] = this.game.text;
+    };
+    MyGame.prototype.getUsertext = function () {
+        var _this_1 = this;
+        var _a = this.game.winningCases
+            .flat()
+            .map(function (e) { return _this_1.game.usersList[e]; }), text1 = _a[0], text2 = _a[1];
+        return text1 || text2;
+    };
+    MyGame.prototype.removeLosingCases = function (arr) {
+        var _this_1 = this;
+        // get winning cases without losing cases (because of raws includes both options)
+        var isRawIncludesX = arr.some(function (e) { return _this_1.game.usersList[e] === "X"; });
+        var isRawIncludesO = arr.some(function (e) { return _this_1.game.usersList[e] === "O"; });
+        isRawIncludesX &&
+            isRawIncludesO &&
+            (this.game.winningCases = this.game.winningCases.filter(function (e) { return JSON.stringify(e) !== JSON.stringify(arr); }));
+    };
+    MyGame.prototype.updateWinningCases = function () {
+        var _this_1 = this;
+        if (this.game.winningCases.length > 1) {
+            this.game.winningCases.forEach(function (el) {
+                _this_1.isWin(el) ? _this_1.finishWithWin() : _this_1.removeLosingCases(el);
+            });
+            this.game.winningCases.length === 1 &&
+                this.getUsertext() === this.game.text &&
+                this.finishWithDraw();
+        }
+        else {
+            this.finishWithDraw();
+        }
+    };
+    MyGame.prototype.onClickBox = function (e) {
+        this.game.text = this.game.whichTurn ? "X" : "O";
+        this.game.whichTurn = !this.game.whichTurn;
+        this.onTypingBox(e);
+        this.updateUsersList(e);
+        this.updateWinningCases();
+    };
+    MyGame.prototype.onTypingBox = function (e) {
+        var target = e.target;
+        target.textContent = this.game.text;
+        this.removeOnclickFromBox(+target.id);
+    };
+    MyGame.prototype.addOnclickIntoBoxes = function () {
+        var _this = this;
+        boxes.forEach(function (box, index) {
+            box.addEventListener("click", _this.invokeOnclick);
+            box.id = index.toString();
+            box.textContent = "";
+        });
+    };
+    MyGame.prototype.removeOnclickFromBox = function (id) {
+        boxes[id].removeEventListener("click", this.invokeOnclick);
+    };
+    MyGame.prototype.removeOnclickFromAllBoxes = function () {
+        var _this_1 = this;
+        boxes.forEach(function (e) { return e.removeEventListener("click", _this_1.invokeOnclick); });
+    };
+    return MyGame;
+}());
+var newGame = new MyGame(defaultValue);
+newGame.start();
+restartBtn.addEventListener("click", function () { return newGame.start(); });
