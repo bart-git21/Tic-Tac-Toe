@@ -26,7 +26,7 @@ const defaultValue: DefaultValueType = {
 
 class MyGame {
   game: DefaultValueType;
-  invokeOnclick: (event:MouseEvent) => void;
+  invokeOnclick: (event: MouseEvent) => void;
 
   constructor(defVal: DefaultValueType) {
     this.game = defVal;
@@ -107,11 +107,9 @@ class MyGame {
   }
   removeOnclickFromBox(id: number) {
     boxes[id].removeEventListener("click", this.invokeOnclick);
-}
-removeOnclickFromAllBoxes() {
-    boxes.forEach(
-      e => e.removeEventListener("click", this.invokeOnclick)
-    );
+  }
+  removeOnclickFromAllBoxes() {
+    boxes.forEach((e) => e.removeEventListener("click", this.invokeOnclick));
   }
 }
 const newGame = new MyGame(defaultValue);
