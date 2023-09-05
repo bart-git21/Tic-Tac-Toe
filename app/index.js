@@ -22,6 +22,7 @@ var MyGame = /** @class */ (function () {
         this.invokeOnclick = this.onClickBox.bind(this);
     }
     MyGame.prototype.start = function () {
+        this.removeOnclickFromAllBoxes();
         this.game = JSON.parse(JSON.stringify(defaultValue));
         resultField.textContent = "";
         this.addOnclickIntoBoxes();
@@ -30,13 +31,9 @@ var MyGame = /** @class */ (function () {
         var _this_1 = this;
         return el.every(function (i) { return _this_1.game.usersList[i] === _this_1.game.text; });
     };
-    MyGame.prototype.finishWithWin = function () {
+    MyGame.prototype.finish = function (text) {
         this.removeOnclickFromAllBoxes();
-        resultField.textContent = "".concat(this.game.text, " is winning!");
-    };
-    MyGame.prototype.finishWithDraw = function () {
-        this.removeOnclickFromAllBoxes();
-        resultField.textContent = "it's draw";
+        resultField.textContent = text ? "".concat(text, " is winning!") : "it's draw";
     };
     MyGame.prototype.updateUsersList = function (e) {
         var index = +e.target.id;
@@ -62,14 +59,16 @@ var MyGame = /** @class */ (function () {
         var _this_1 = this;
         if (this.game.winningCases.length > 1) {
             this.game.winningCases.forEach(function (el) {
-                _this_1.isWin(el) ? _this_1.finishWithWin() : _this_1.removeLosingCases(el);
+                _this_1.isWin(el)
+                    ? _this_1.finish(_this_1.game.text)
+                    : _this_1.removeLosingCases(el);
             });
             this.game.winningCases.length === 1 &&
                 this.getUsertext() === this.game.text &&
-                this.finishWithDraw();
+                this.finish();
         }
         else {
-            this.finishWithDraw();
+            this.finish();
         }
     };
     MyGame.prototype.onClickBox = function (e) {
@@ -87,6 +86,7 @@ var MyGame = /** @class */ (function () {
     MyGame.prototype.addOnclickIntoBoxes = function () {
         var _this = this;
         boxes.forEach(function (box, index) {
+            console.log("from add", this);
             box.addEventListener("click", _this.invokeOnclick);
             box.id = index.toString();
             box.textContent = "";
@@ -96,8 +96,11 @@ var MyGame = /** @class */ (function () {
         boxes[id].removeEventListener("click", this.invokeOnclick);
     };
     MyGame.prototype.removeOnclickFromAllBoxes = function () {
-        var _this_1 = this;
-        boxes.forEach(function (e) { return e.removeEventListener("click", _this_1.invokeOnclick); });
+        var _this = this;
+        boxes.forEach(function (e) { 
+            console.log("from remove", this);
+            return e.removeEventListener("click", _this.invokeOnclick); 
+    });
     };
     return MyGame;
 }());

@@ -34,6 +34,7 @@ class MyGame {
   }
 
   start() {
+    this.removeOnclickFromAllBoxes();
     this.game = JSON.parse(JSON.stringify(defaultValue));
     resultField.textContent = "";
     this.addOnclickIntoBoxes();
@@ -41,13 +42,9 @@ class MyGame {
   isWin(el: number[]): boolean {
     return el.every((i) => this.game.usersList[i] === this.game.text);
   }
-  finishWithWin() {
+  finish(text?: string) {
     this.removeOnclickFromAllBoxes();
-    resultField.textContent = `${this.game.text} is winning!`;
-  }
-  finishWithDraw() {
-    this.removeOnclickFromAllBoxes();
-    resultField.textContent = `it's draw`;
+    resultField.textContent = text ? `${text} is winning!` : `it's draw`;
   }
 
   updateUsersList(e: MouseEvent): void {
@@ -74,14 +71,16 @@ class MyGame {
   updateWinningCases() {
     if (this.game.winningCases.length > 1) {
       this.game.winningCases.forEach((el) => {
-        this.isWin(el) ? this.finishWithWin() : this.removeLosingCases(el);
+        this.isWin(el)
+          ? this.finish(this.game.text)
+          : this.removeLosingCases(el);
       });
 
       this.game.winningCases.length === 1 &&
         this.getUsertext() === this.game.text &&
-        this.finishWithDraw();
+        this.finish();
     } else {
-      this.finishWithDraw();
+      this.finish();
     }
   }
 
@@ -109,7 +108,8 @@ class MyGame {
     boxes[id].removeEventListener("click", this.invokeOnclick);
   }
   removeOnclickFromAllBoxes() {
-    boxes.forEach((e) => e.removeEventListener("click", this.invokeOnclick));
+    const _this = this;
+    boxes.forEach((e) => e.removeEventListener("click", _this.invokeOnclick));
   }
 }
 const newGame = new MyGame(defaultValue);
