@@ -1,3 +1,5 @@
+import "./style/style.css";
+
 const resultField = document.querySelector(".result-field") as HTMLDivElement;
 const restartBtn = document.querySelector(".restart-btn") as HTMLDivElement;
 const boxes: NodeListOf<HTMLDivElement> = document.querySelectorAll(".box");

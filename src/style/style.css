@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Azeret+Mono&display=swap");
-@import url("./../app/components/header/header.css");
-@import url("./../app/components/game/ticTacToe.css");
-@import url("./../app/components/footer/footer.css");
+@import url("./../components/header/header.css");
+@import url("./../components/game/ticTacToe.css");
+@import url("./../components/footer/footer.css");
 
 ::placeholder {
   color: #665;
