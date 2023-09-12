@@ -78,9 +78,13 @@ class MyGame {
           : this.removeLosingCases(el);
       });
 
-      this.game.winningCases.length === 1 &&
-        this.getUsertext() === this.game.text &&
-        this.finish();
+      if (this.game.winningCases.length === 1) {
+        if (this.isWin(this.game.winningCases[0])) {
+          this.finish(this.game.text);
+        } else if (this.getUsertext() === this.game.text) {
+          this.finish();
+        }
+      }
     } else {
       this.finish();
     }
