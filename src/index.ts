@@ -5,13 +5,11 @@ const restartBtn = document.querySelector(".restart-btn") as HTMLDivElement;
 const boxes: NodeListOf<HTMLDivElement> = document.querySelectorAll(".box");
 
 type DefaultValueType = {
-  whichTurn: boolean;
   text: string;
   usersList: string[];
   winningCases: Readonly<number[][]>;
 };
 const defaultValue: DefaultValueType = {
-  whichTurn: true,
   text: "",
   usersList: Array(9).fill(""),
   winningCases: [
@@ -91,8 +89,7 @@ class MyGame {
   }
 
   onClickBox(e: MouseEvent) {
-    this.game.text = this.game.whichTurn ? "X" : "O";
-    this.game.whichTurn = !this.game.whichTurn;
+    this.game.text = this.game.text === "X" ? "O" : "X";
     this.onTypingBox(e);
     this.updateUsersList(e);
     this.updateWinningCases();
@@ -100,6 +97,10 @@ class MyGame {
   onTypingBox(e: MouseEvent): void {
     const target = e.target as HTMLDivElement;
     target.textContent = this.game.text;
+
+    const userClass = this.game.text === "X" ? "user1" : "user2";
+    target.classList.add(userClass);
+    
     this.removeOnclickFromBox(+target.id);
   }
   addOnclickIntoBoxes() {
