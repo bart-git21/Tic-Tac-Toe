@@ -24,4 +24,12 @@
     &:hover {
         background-color: $c-bg-main;
     }
+
+    &.user1 {
+        background-color: $c-bg-user1;
+    }
+
+    &.user2 {
+        background-color: $c-bg-user2;
+    }
 }
